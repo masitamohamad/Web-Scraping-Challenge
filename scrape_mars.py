@@ -3,10 +3,8 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd 
 import requests 
 from selenium import webdriver
+import time
 
-def init_browser():
-    executable_path = {'executable_path': '/Users/16299/Documents/Homework/Web-Scraping-Challenge/chromedriver.exe'}
-    return Browser('chrome', **executable_path, headless=False)
 
 def scrape():
 
@@ -24,13 +22,15 @@ def scrape():
 
     print("---------------NASA Mars News Scraping Complete!---------------")
 
-    ###########################################################################################
+    ##########################################################################################
     # JPL Mars Space Images
-    ###########################################################################################
+    ##########################################################################################
 
-    browser = init_browser()
+    executable_path = {'executable_path': 'chromedriver.exe'}
+    browser = Browser('chrome', **executable_path, headless=False)
     url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(url)
+    time.sleep(3)
     current_html = browser.html
     image_soup = bs(current_html, 'html.parser')
     partial_img_url = image_soup.find('article')['style'].replace('background-image: url(','').replace(');', '')[1:-1]
@@ -45,18 +45,18 @@ def scrape():
 
     driver = webdriver.Chrome()
     driver.get('https://twitter.com/marswxreport?lang=en')
+    time.sleep(5)
     html = driver.page_source
-    driver.close()
     twitter_soup = bs(html, 'html.parser')
     latest_tweets = twitter_soup.find_all('span', class_='css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0')
-
+    driver.close()
     tweet_list = []
     for tweet in latest_tweets:
         tweet_list.append(tweet.text)
 
     keyword = 'InSight'
     weather_tweet = [i for i in tweet_list if keyword in i] 
-    mars_weather = weather_tweet
+    mars_weather = weather_tweet[0]
 
     print("---------------Mars Weather Scraping Complete!---------------")
 
@@ -75,29 +75,35 @@ def scrape():
     ###########################################################################################
     # Mars Hemispheres
     ###########################################################################################
+    executable_path = {'executable_path': 'chromedriver.exe'}
+    browser = Browser('chrome', **executable_path, headless=False)
 
-    browser = init_browser()
-    mars_hemisphere_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
-    browser.visit(mars_hemisphere_url)
-    hemisphere_html = browser.html
-    hemisphere_soup = bs(hemisphere_html, 'html.parser')
-    hemisphere_img_class = hemisphere_soup.find_all('div', class_='item')
 
-    main_url = "https://astrogeology.usgs.gov"
+    hemispheres_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(hemispheres_url)
+    time.sleep(3)
+    html_hemispheres = browser.html
+
+    hemisphere_soup = bs(html_hemispheres, 'html.parser')
+    items = hemisphere_soup.find_all('div', class_='item')
+
     hemisphere_image_urls = []
+    hemispheres_main_url = 'https://astrogeology.usgs.gov' 
 
-    for i in hemisphere_img_class:
-        img_title = i.find('h3').text
+    for i in items: 
+        title = i.find('h3').text
         partial_img_url = i.find('a', class_='itemLink product-item')['href']
-        browser.visit(main_url+partial_img_url)
-        img_html = browser.html
-        img_soup = bs(img_html, 'html.parser')
-        individual_img_partial_url = img_soup.find('img', class_='wide-image')['src']
-        individual_img_url = main_url + individual_img_partial_url
-        hemisphere_image_urls.append({"title" : img_title, "img_url" : individual_img_url})
-        browser.quit()
-    
-        print("---------------Mars Hemispheres Scraping Complete!---------------")
+        browser.visit(hemispheres_main_url + partial_img_url)
+        hemisphere_img_html = browser.html
+             
+        hemisphere_img_soup = bs(hemisphere_img_html, 'html.parser')
+        
+        img_url = hemispheres_main_url + hemisphere_img_soup.find('img', class_='wide-image')['src']
+        hemisphere_image_urls.append({"title" : title, "img_url" : img_url})
+ 
+    browser.quit()
+
+    print("---------------Mars Hemispheres Scraping Complete!---------------")
 
     ###########################################################################################
     # Store the return value in Python dictionary

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Mission to Mars</title>
+  
+  <!-- Point HTML to the Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+  crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+
+      <div class="jumbotron text-center">
+        <h1>Mission to Mars</h1>
+        <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
+      </div>
+  
+      <div class="row" id="mars-news">
+        <div class="col-md-12">
+            <h3>Latest Mars News</h3>
+              <h4>{{mars_data_dict.news_title}}</h4>
+                  <p>{{mars_data_dict.news_paragraph}}</p>
+        </div>
+      </div>
+
+
+      <div class ="row" id="mars-image">
+        <div class = "col-md-8">
+            <h3>Featured Mars Image</h3>
+            <img src = "{{mars_data_dict.featured_image_url}}" alt ="Mars Image">
+        </div>
+
+
+        <div class = "col-md-4">
+          <h4>Current Weather on Mars</h4>
+          <p>{{mars_data_dict.mars_weather
+  }}</p>
+          <br>
+          <h4>Mars Facts</h4>
+          <p>{{mars_data_dict.mars_facts}}</p>
+      </div>
+  </div>
+
+
+  <div class ="row" id="mars-hemispheres">
+    <div class = "col-md-12">
+        <h3><center>Mars Hemispheres</center></h3>
+
+        {% for hemisphere in mars_data_dict.hemisphere_image_urls %}
+            <div class = "col-md-6">
+                <div class = "thumbnail">
+                    <img src = "{{hemisphere.img_url}}">
+                        <h3>{{hemisphere.title}}</h3>
+                    </div>
+                </div>
+        {% endfor %}
+            </div>
+
+
+
+      </div>
+      </div>
+
+      </div>
+
+
+    </div>
+
+  <!--These are <script>s from Bootstrap website. Many BS components require the use of JavaScript to function -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+</html>
